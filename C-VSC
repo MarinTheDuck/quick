@@ -1,0 +1,14 @@
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{
+    Write-Warning "Please run this script as an Administrator!"
+    Exit
+}
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+choco install mingw -y
+choco install vscode -y
+Function Install-VSCodeExtensions {
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"code --install-extension danielpinto8zz6.c-cpp-compile-run; code --install-extension ms-vscode.cpptools`"" -Wait
+}
+Install-VSCodeExtensions
